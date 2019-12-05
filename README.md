@@ -1,6 +1,6 @@
 # `Client-Cert` HTTP Header
 
-This repository contains the individual draft for Client-Cert HTTP Header: Conveying Client Certificate Information from TLS Terminating Reverse Proxies to Origin Server Applications.
+This repository contains the source for individual draft,`Client-Cert HTTP Header: Conveying Client Certificate Information from TLS Terminating Reverse Proxies to Origin Server Applications`.
 
 `main.md` is the source in markdown format. 
 
