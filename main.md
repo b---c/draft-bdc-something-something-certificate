@@ -102,21 +102,6 @@ The configuration options and request sanitization are necessarily functionally 
 
    [[ TBD if this draft progresses, register the `Client-Cert` HTTP header field in the "Permanent Message Header Field Names" registry defined in [@RFC3864] ]]
 
-...
-
-<reference anchor="ITU.X690">
-<front>
-<title>
-Information Technology - ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)
-</title>
-<author>
-<organization>International Telecommunications Union</organization>
-</author>
-<date month="August" year="2015"/>
-</front>
-<seriesInfo name="ITU-T" value="Recommendation X.690"/>
-</reference>
-
 {backmatter}
 
 # Example 
@@ -132,6 +117,17 @@ Information Technology - ASN.1 encoding rules: Specification of Basic Encoding R
    draft-bdc-something-something-certificate-00 
 
    * Initial draft after a time constrained and rushed [secdispatch presentation](https://datatracker.ietf.org/meeting/106/materials/slides-106-secdispatch-securing-protocols-between-proxies-and-backend-http-servers-00) at IETF 106 in Singapore with the recommendation to write up a draft (at the end of the [minutes](https://datatracker.ietf.org/meeting/106/materials/minutes-106-secdispatch)) and some folks expressing interest despite the rather poor presentation 
+
    
-   
-   
+<reference anchor="ITU.X690">
+<front>
+<title>
+Information Technology - ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)
+</title>
+<author>
+<organization>International Telecommunications Union</organization>
+</author>
+<date month="August" year="2015"/>
+</front>
+<seriesInfo name="ITU-T" value="Recommendation X.690"/>
+</reference>
