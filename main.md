@@ -64,7 +64,7 @@ A certificate is represented in text as an `EncodedCertificate`, which is the ba
 Client-Cert
 :      The certificate or certificate chain as a comma-separated list of `EncodedCertificate` values with the end-entity certificate first followed by any intermediate certificates. 
                                                                                                 
-The `Client-Cert` header field defined herein is only for use in HTTP requests and MUST NOT to be used in HTTP responses. 
+The `Client-Cert` header field defined herein is only for use in HTTP requests and MUST NOT be used in HTTP responses. 
 
 ## Processing Rules
 
