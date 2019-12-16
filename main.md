@@ -110,7 +110,7 @@ Travis Spencer,
 and
 Hans Zandbelt.
 
-[[ Please let me know if you've been erroneously omitted ]]
+[[ Please let me know if you've been erroneously omitted or if you prefer not to be named ]]
 
 # IANA Considerations
 
