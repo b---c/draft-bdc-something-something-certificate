@@ -96,7 +96,21 @@ The configuration options and request sanitization are necessarily functionally 
  
 
 # Acknowledgements
-[[TBD]]
+The author would like to thank the following individuals who've contributed in various ways ranging from providing specific feedback to being generally supportive of bringing forth the draft:
+Annabelle Backman,
+Benjamin Kaduk,
+Torsten Lodderstedt,
+Kathleen Moriarty,
+Mike Ounsworth,
+Matt Peterson,
+Justin Richer,
+Rich Salz,
+Rifaat Shekh-Yusef,
+Travis Spencer,
+and
+Hans Zandbelt.
+
+[[ Please let me know if you've been erroneously omitted ]]
 
 # IANA Considerations
 
