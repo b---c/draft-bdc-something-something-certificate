@@ -4,4 +4,4 @@ This repository contains the source for individual draft,`Client-Cert HTTP Heade
 
 `main.md` is the source in markdown format. 
 
-To build the xml2rfc file and transform it into html and txt run `doit.sh`. You need to have https://github.com/mmarkdown/mmark and xml2rfc installed.
+To build the xml2rfc file and transform it into html and txt run `doit.sh`. You need to have https://github.com/mmarkdown/mmark and https://pypi.org/project/xml2rfc/ installed.
