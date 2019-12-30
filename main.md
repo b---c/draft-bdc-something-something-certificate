@@ -32,9 +32,9 @@ A fairly common deployment pattern for HTTPS applications is to have the origin 
 
 The deployment pattern is found in a number of varieties such as n-tier architectures, content del  ivery networks, application load balancing services, and ingress controllers.
 
-Although not exceedingly prevalent, TLS client certificate authentication is sometimes employed and in such cases the origin server often requires information about the client certificate for its application logic. Such logic might include access control decisions, audit logging, and binding issued tokens or cookies to a certificate, and the respective validation of such bindings. The specific details of the certificate needed also vary with the application requirements. In order for these types of application deployments to work in practice, the reverse proxy needs to convey information about the client certificate to the origin application server. A common way this information is conveyed in practice today is by using the non-standard header(s) to carry the certificate (in some encoding) or individual parts thereof in the HTTP request that is dispatched to the origin server. This solution works to some extend but interoperability between independently developed components can be cumbersome or even impossible depending on the implementation choices respectively made (like what headers names are used or are configurable, which parts of the certificate are exposed, or how the certificate is encoded). A standardized approach to this commonly functionality could improve and simplify interoperability between implementations.
+Although not exceedingly prevalent, TLS client certificate authentication is sometimes employed and in such cases the origin server often requires information about the client certificate for its application logic. Such logic might include access control decisions, audit logging, and binding issued tokens or cookies to a certificate, and the respective validation of such bindings. The specific details of the certificate needed also vary with the application requirements. In order for these types of application deployments to work in practice, the reverse proxy needs to convey information about the client certificate to the origin application server. A common way this information is conveyed in practice today is by using the non-standard header(s) to carry the certificate (in some encoding) or individual parts thereof in the HTTP request that is dispatched to the origin server. This solution works to some extend but interoperability between independently developed components can be cumbersome or even impossible depending on the implementation choices respectively made (like what header names are used or are configurable, which parts of the certificate are exposed, or how the certificate is encoded). A standardized approach to this commonly functionality could improve and simplify interoperability between implementations.
 
-This document aspires to standardize an HTTP header field called `Client-Cert` that a TLS terminating reverse proxy adds to requests that it sends to the origin servers. The header value contains the client certificate from the mutually-authenticated TLS connection between the client and reverse proxy, which enables the origin server to utilize the certificate in its application logic. The usage of the headers, both the reverse proxy adding the header and the origin server relying on the header for application logic, are to be configuration options of the respective systems as they will not always be applicable. 
+This document aspires to standardize an HTTP header field called `Client-Cert` that a TLS terminating reverse proxy adds to requests that it sends to the origin servers. The header value contains the client certificate from the mutually-authenticated TLS connection between the client and reverse proxy, which enables the origin server to utilize the certificate in its application logic. The usage of the header, both the reverse proxy adding the header and the origin server relying on the header for application logic, are to be configuration options of the respective systems as they will not always be applicable. 
 
 
 ## Requirements Notation and Conventions
@@ -82,17 +82,17 @@ Forward proxies and other intermediaries MUST NOT add the `Client-Cert` header t
 Backend origin servers may then use the `Client-Cert` header of the request to determine if the connection from the client to the TTRP was mutually-authenticated and, if so, the certificate thereby presented by the client. 
 
 
-# Security Considerations
+# Security Considerations {#sec}
 
-The header described herein enable a reverse proxy and backend or origin server to function together as though, from the client's perspective, they are a single logical server side deployment of HTTPS over a mutually-authenticated TLS connection. Use of the headers outside that intended use case, however, may undermine the protections afforded by TLS client certificate authentication. Therefore steps MUST be taken to prevent unintended use, both in sending the headers and in relying on their value.
+The header described herein enable a reverse proxy and backend or origin server to function together as though, from the client's perspective, they are a single logical server side deployment of HTTPS over a mutually-authenticated TLS connection. Use of the `Client-Cert` header outside that intended use case, however, may undermine the protections afforded by TLS client certificate authentication. Therefore steps MUST be taken to prevent unintended use, both in sending the header and in relying on its value.
 
-Producing and consuming the headers SHOULD be a configurable option, respectively, in a reverse proxy and backend server (or individual application in that server). The default configuration for both should be to not use the headers thus requiring an "opt-in" to the functionality.
+Producing and consuming the `Client-Cert` header SHOULD be a configurable option, respectively, in a reverse proxy and backend server (or individual application in that server). The default configuration for both should be to not use the `Client-Cert` header thus requiring an "opt-in" to the functionality.
 
-Backend servers MUST only accept the headers from trusted reverse proxies. And reverse proxies MUST sanitize the incoming request before forwarding it on by removing or overwriting any existing instances of the headers. Otherwise arbitrary clients can control the header values as seen and used by the backend server.
+In order to prevent header injection, backend servers MUST only accept the `Client-Cert` header from trusted reverse proxies. And reverse proxies MUST sanitize the incoming request before forwarding it on by removing or overwriting any existing instances of the header. Otherwise arbitrary clients can control the header value as seen and used by the backend server.
 
 The communication between a reverse proxy and backend server needs to be secured against eavesdropping and modification by unintended parties.
 
-The configuration options and request sanitization are necessarily functionally of the respective servers. The other requirements can be met in a number of ways, which will vary based on specific deployments. The communication between a reverse proxy and backend or origin server, for example, might be authenticated in some way with the insertion and consumption headers occurring only on that connection. Alternatively the network topology might dictate a private network such that the backend application is only able to accept requests from the reverse proxy and the proxy can only make requests to that server. Other deployments that meet the requirements set forth herein are also possible.
+The configuration options and request sanitization are necessarily functionally of the respective servers. The other requirements can be met in a number of ways, which will vary based on specific deployments. The communication between a reverse proxy and backend or origin server, for example, might be authenticated in some way with the insertion and consumption of the `Client-Cert` header occurring only on that connection. Alternatively the network topology might dictate a private network such that the backend application is only able to accept requests from the reverse proxy and the proxy can only make requests to that server. Other deployments that meet the requirements set forth herein are also possible.
  
 
 # Acknowledgements
@@ -119,10 +119,18 @@ Hans Zandbelt.
 {backmatter}
 
 # Example 
-[[TBD]]
+[[TBD]] 
 
 # Considerations Considered
-[[TBD: RFC7239, maybe something about the TTRP-to-origin connection and sanitation, maybe something about the whole cert vs. parts]]
+
+## The Forwarded HTTP Extension
+The `Forwarded` HTTP header field defined in [@RFC7239] allows proxy components to disclose information lost in the proxying process. The TLS client certificate information of concern to this draft could have been communicated with an extension parameter to the `Forwarded` header field, however, doing so would have had some disadvantages that this draft endeavored to avoid. The `Forwarded` header syntax allows for information about a full the chain of proxied HTTP requests, whereas the `Client-Cert` header of this document is concerned with conveying information about the certificate presented by the originating client on the TLS connection to the reverse proxy (which appears as the server from that client's perspective) to backend applications.  The multi-hop syntax of the `Forwarded` header is expressive but also more complicated, which would make processing it more cumbersome, and more importantly, make properly sanitizing its content as required by (#sec) to prevent header injection considerably more difficult and error prone. Thus, this draft opted for a flatter and simpler structure of a single `Client-Cert` header.
+
+## Header Injection
+[[ TBD ]]
+
+## The Whole Certificate
+[[ TBD ]]
 
 # Document History
 
