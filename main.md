@@ -88,7 +88,7 @@ The header described herein enable a reverse proxy and backend or origin server 
 
 Producing and consuming the `Client-Cert` header SHOULD be a configurable option, respectively, in a reverse proxy and backend server (or individual application in that server). The default configuration for both should be to not use the `Client-Cert` header thus requiring an "opt-in" to the functionality.
 
-In order to prevent header injection, backend servers MUST only accept the `Client-Cert` header from trusted reverse proxies. And reverse proxies MUST sanitize the incoming request before forwarding it on by removing or overwriting any existing instances of the header. Otherwise arbitrary clients can control the header value as seen and used by the backend server.
+In order to prevent header injection, backend servers MUST only accept the `Client-Cert` header from trusted reverse proxies. And reverse proxies MUST sanitize the incoming request before forwarding it on by removing or overwriting any existing instances of the header. Otherwise arbitrary clients can control the header value as seen and used by the backend server. It is important to note that neglecting to prevent header injection does not "fail safe" in that the nominal functionality will still work as expected even when malicious actions are possible. As such, extra care is recommended in ensuring that proper header sanitation is in place. 
 
 The communication between a reverse proxy and backend server needs to be secured against eavesdropping and modification by unintended parties.
 
@@ -119,13 +119,13 @@ Extra line breaks and whitespace have been added to the following examples for d
 The `Forwarded` HTTP header field defined in [@RFC7239] allows proxy components to disclose information lost in the proxying process. The TLS client certificate information of concern to this draft could have been communicated with an extension parameter to the `Forwarded` header field, however, doing so would have had some disadvantages that this draft endeavored to avoid. The `Forwarded` header syntax allows for information about a full the chain of proxied HTTP requests, whereas the `Client-Cert` header of this document is concerned with conveying information about the certificate presented by the originating client on the TLS connection to the reverse proxy (which appears as the server from that client's perspective) to backend applications.  The multi-hop syntax of the `Forwarded` header is expressive but also more complicated, which would make processing it more cumbersome, and more importantly, make properly sanitizing its content as required by (#sec) to prevent header injection considerably more difficult and error prone. Thus, this draft opted for the flatter and more straightforward structure of a single `Client-Cert` header.
 
 ## Header Injection
-[[ TBD ]]
+This draft requires that the reverse proxy sanitize the headers of the incoming request by removing or overwriting any existing instances of the `Client-Cert` header before dispatching that request to the backend application. Otherwise, the client could inject its own `Client-Cert` header that would appear to the backend to have come from the reverse proxy. Although numerous other methods of detecting/preventing header injection are possible; such as the use of a unique secret value as part of the header name or value or the application of a signature, HMAC, or AEAD, there is no common general standardized mechanism. The potential problem of client header injection is not at all unique to the functionality of this draft and it would therefor be inappropriate for this draft to define a one-off solution. In the absence of a generic standardized solution existing currently, stripping/sanitizing the headers is the de facto means of protecting against header injection in practice today. Sanitizing the headers is sufficient when properly implemented and is normative requirement of (#sec).
 
 ## The Whole Certificate
 [[ TBD ]]
 
 # Acknowledgements
-The author would like to thank the following individuals who've contributed in various ways ranging from providing specific feedback to being generally supportive of bringing forth the draft:
+The author would like to thank the following individuals who've contributed in various ways ranging from just being generally supportive of bringing forth the draft to providing specific feedback or content:
 Annabelle Backman,
 Benjamin Kaduk,
 Torsten Lodderstedt,
