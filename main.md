@@ -101,8 +101,17 @@ The configuration options and request sanitization are necessarily functionally 
 
 {backmatter}
 
-# Example 
-[[TBD]] 
+# Examples 
+Extra line breaks and whitespace have been added to the following examples for display and formatting purposes only.
+
+## Self-Signed Client Certificate
+[[ TBD ]]
+
+## End-Entity Client Certificate
+[[ TBD ]]
+
+## End-Entity Client Certificate with Intermediate
+[[ TBD ]]
 
 # Considerations Considered
 
