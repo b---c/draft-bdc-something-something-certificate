@@ -95,23 +95,6 @@ The communication between a reverse proxy and backend server needs to be secured
 The configuration options and request sanitization are necessarily functionally of the respective servers. The other requirements can be met in a number of ways, which will vary based on specific deployments. The communication between a reverse proxy and backend or origin server, for example, might be authenticated in some way with the insertion and consumption of the `Client-Cert` header occurring only on that connection. Alternatively the network topology might dictate a private network such that the backend application is only able to accept requests from the reverse proxy and the proxy can only make requests to that server. Other deployments that meet the requirements set forth herein are also possible.
  
 
-# Acknowledgements
-The author would like to thank the following individuals who've contributed in various ways ranging from providing specific feedback to being generally supportive of bringing forth the draft:
-Annabelle Backman,
-Benjamin Kaduk,
-Torsten Lodderstedt,
-Kathleen Moriarty,
-Mike Ounsworth,
-Matt Peterson,
-Justin Richer,
-Rich Salz,
-Rifaat Shekh-Yusef,
-Travis Spencer,
-and
-Hans Zandbelt.
-
-[[ Please let me know if you've been erroneously omitted or if you prefer not to be named ]]
-
 # IANA Considerations
 
    [[ TBD if this draft progresses, register the `Client-Cert` HTTP header field in the "Permanent Message Header Field Names" registry defined in [@RFC3864] ]]
@@ -131,6 +114,23 @@ The `Forwarded` HTTP header field defined in [@RFC7239] allows proxy components 
 
 ## The Whole Certificate
 [[ TBD ]]
+
+# Acknowledgements
+The author would like to thank the following individuals who've contributed in various ways ranging from providing specific feedback to being generally supportive of bringing forth the draft:
+Annabelle Backman,
+Benjamin Kaduk,
+Torsten Lodderstedt,
+Kathleen Moriarty,
+Mike Ounsworth,
+Matt Peterson,
+Justin Richer,
+Rich Salz,
+Rifaat Shekh-Yusef,
+Travis Spencer,
+and
+Hans Zandbelt.
+
+[[ Please let me know if you've been erroneously omitted or if you prefer not to be named ]]
 
 # Document History
 
