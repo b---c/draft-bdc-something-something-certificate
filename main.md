@@ -97,7 +97,7 @@ The configuration options and request sanitization are necessarily functionally 
 
 # IANA Considerations
 
-   [[ TBD if this draft progresses, register the `Client-Cert` HTTP header field in the "Permanent Message Header Field Names" registry defined in [@RFC3864] ]]
+   [[ TBD if this draft progresses, register the `Client-Cert` HTTP header field in the ["Permanent Message Header Field Names" registry](https://www.iana.org/assignments/message-headers/message-headers.xhtml) defined in [@RFC3864] ]]
 
 {backmatter}
 
