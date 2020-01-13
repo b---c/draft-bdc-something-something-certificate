@@ -62,17 +62,18 @@ A certificate is represented in text as an `EncodedCertificate`, which is the ba
  In the context of a TLS terminating reverse proxy (TTRP) deployment, the TTRP makes the TLS client certificate available to the backend application with the following header field.
  
 Client-Cert
-:      The certificate or certificate chain as a comma-separated list of `EncodedCertificate` values with the end-entity certificate first followed by any intermediate certificates. 
+:      The end-entity client certificate as an `EncodedCertificate` value.
                                                                                                 
-The `Client-Cert` header field defined herein is only for use in HTTP requests and MUST NOT be used in HTTP responses. 
+The `Client-Cert` header field defined herein is only for use in HTTP requests and MUST NOT be used in HTTP responses.  It is a single HTTP header field-value as defined in Section 3.2 of [@RFC7230], which MUST NOT have a list of values or occur multiple times in a request.
+
 
 ## Processing Rules
 
-This section defines the applicable processing rules for a TLS terminating reverse proxy (TTRP) that has negotiated a mutually-authenticated TLS connection to convey the client certificate and any intermediaries from that connection to the backend origin servers. Use of the technique is to be a configuration or deployment option and the processing rules described herein are for servers operating with that option enabled. 
+This section defines the applicable processing rules for a TLS terminating reverse proxy (TTRP) that has negotiated a mutually-authenticated TLS connection to convey the client certificate from that connection to the backend origin servers. Use of the technique is to be a configuration or deployment option and the processing rules described herein are for servers operating with that option enabled. 
 
 A TTRP negotiates the use of a mutually-authenticated TLS connection with the client, such as is described in [@RFC8446] or [@RFC5246], and validates the client certificate per its policy and trusted certificate authorities.  Each HTTP request on the underlying TLS connection are dispatched to the origin server with the following modifications:
 
-1. The client certificate and any intermediate certificates are be placed in the `Client-Cert` header field of the dispatched request as defined in (#header).
+1. The client certificate is be placed in the `Client-Cert` header field of the dispatched request as defined in (#header).
 1. Any occurrence of the `Client-Cert` header in the original incoming request MUST be removed or overwritten before forwarding the request.
 
 Requests made over a TLS connection where the use of client certificate authentication was not negotiated MUST be sanitized by removing any and all occurrences `Client-Cert` header field prior to dispatching the request to the backend server.
@@ -101,17 +102,8 @@ The configuration options and request sanitization are necessarily functionally 
 
 {backmatter}
 
-# Examples 
-Extra line breaks and whitespace have been added to the following examples for display and formatting purposes only.
-
-## Self-Signed Client Certificate
-[[ TBD ]]
-
-## End-Entity Client Certificate
-[[ TBD ]]
-
-## End-Entity Client Certificate with Intermediate
-[[ TBD ]]
+# Example 
+Extra line breaks and whitespace have been added to the following example for display and formatting purposes only.
 
 # Considerations Considered
 
@@ -121,8 +113,10 @@ The `Forwarded` HTTP header field defined in [@RFC7239] allows proxy components 
 ## Header Injection
 This draft requires that the reverse proxy sanitize the headers of the incoming request by removing or overwriting any existing instances of the `Client-Cert` header before dispatching that request to the backend application. Otherwise, the client could inject its own `Client-Cert` header that would appear to the backend to have come from the reverse proxy. Although numerous other methods of detecting/preventing header injection are possible; such as the use of a unique secret value as part of the header name or value or the application of a signature, HMAC, or AEAD, there is no common general standardized mechanism. The potential problem of client header injection is not at all unique to the functionality of this draft and it would therefor be inappropriate for this draft to define a one-off solution. In the absence of a generic standardized solution existing currently, stripping/sanitizing the headers is the de facto means of protecting against header injection in practice today. Sanitizing the headers is sufficient when properly implemented and is normative requirement of (#sec).
 
-## The Whole Certificate
-Different applications will have variying requirements about what information from the client certificate is needed, such as the subject and/or issuer distinguished name, subject alternative name(s), serial number, subject public key info, etc.. Furthermore some applications like [@I-D.ietf-oauth-mtls] make use of the entire certificate. In order to accommodate the latter and ensure wide applicability by not trying to cherry-pick particular certificate information, this draft opted to pass the full encoded certificate as the value of the `Client-Cert` header.
+## The Whole Certificate and Only the Whole Certificate 
+Different applications will have varying requirements about what information from the client certificate is needed, such as the subject and/or issuer distinguished name, subject alternative name(s), serial number, subject public key info, etc.. Furthermore some applications like [@I-D.ietf-oauth-mtls] make use of the entire certificate. In order to accommodate the latter and ensure wide applicability by not trying to cherry-pick particular certificate information, this draft opted to pass the full encoded certificate as the value of the `Client-Cert` header.
+
+The handshake and validation of the client certificate (chain) of the mutually-authenticated TLS connection is performed by reverse proxy.  With the responsibility of certificate validation falling on the proxy, only the end-entity certificate is passed to the backend - the root Certificate Authority is not included nor are any intermediates. 
 
 # Acknowledgements
 The author would like to thank the following individuals who've contributed in various ways ranging from just being generally supportive of bringing forth the draft to providing specific feedback or content:
