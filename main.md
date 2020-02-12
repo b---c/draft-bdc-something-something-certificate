@@ -74,7 +74,7 @@ This section outlines the applicable processing rules for a TLS terminating reve
 A TTRP negotiates the use of a mutually-authenticated TLS connection with the client, such as is described in [@RFC8446] or [@RFC5246], and validates the client certificate per its policy and trusted certificate authorities.  Each HTTP request on the underlying TLS connection are dispatched to the origin server with the following modifications:
 
 1. The client certificate is be placed in the `Client-Cert` header field of the dispatched request as defined in (#header).
-1. Any occurrence of the `Client-Cert` header in the original incoming request MUST be removed or overwritten before forwarding the request.
+1. Any occurrence of the `Client-Cert` header in the original incoming request MUST be removed or overwritten before forwarding the request. An incoming request that has a `Client-Cert` header MAY be rejected with an HTTP 400 response. 
 
 Requests made over a TLS connection where the use of client certificate authentication was not negotiated MUST be sanitized by removing any and all occurrences `Client-Cert` header field prior to dispatching the request to the backend server.
 
@@ -177,6 +177,8 @@ Different applications will have varying requirements about what information fro
 
 The handshake and validation of the client certificate (chain) of the mutually-authenticated TLS connection is performed by reverse proxy.  With the responsibility of certificate validation falling on the proxy, only the end-entity certificate is passed to the backend - the root Certificate Authority is not included nor are any intermediates. 
 
+[[ It has been suggested that more information about the certificate chain might be needed/wanted by the backend application and that any intermediates as well as the root should also be somehow conveyed, which is an area for further discussion should this draft progress. ]]
+
 # Acknowledgements
 The author would like to thank the following individuals who've contributed in various ways ranging from just being generally supportive of bringing forth the draft to providing specific feedback or content:
 Annabelle Backman,
@@ -186,6 +188,7 @@ Kathleen Moriarty,
 Mike Ounsworth,
 Matt Peterson,
 Justin Richer,
+Michael Richardson,
 Rich Salz,
 Rifaat Shekh-Yusef,
 Travis Spencer,
@@ -199,7 +202,7 @@ Hans Zandbelt.
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
    draft-bdc-something-something-certificate-02
    
-   * Editorial tweaks 
+   * Editorial tweaks + [[further discussion notes]] 
 
    draft-bdc-something-something-certificate-01
 
