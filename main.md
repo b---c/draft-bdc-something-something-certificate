@@ -78,9 +78,9 @@ A TTRP negotiates the use of a mutually-authenticated TLS connection with the cl
 
 Requests made over a TLS connection where the use of client certificate authentication was not negotiated MUST be sanitized by removing any and all occurrences `Client-Cert` header field prior to dispatching the request to the backend server.
 
-Forward proxies and other intermediaries MUST NOT add the `Client-Cert` header to requests. 
-
 Backend origin servers may then use the `Client-Cert` header of the request to determine if the connection from the client to the TTRP was mutually-authenticated and, if so, the certificate thereby presented by the client. 
+
+Forward proxies and other intermediaries MUST NOT add the `Client-Cert` header to requests, or modify an existing `Client-Cert` header. Similarly, clients MUST NOT employ the `Client-Cert` header in requests. 
 
 
 # Security Considerations {#sec}
@@ -197,6 +197,9 @@ Hans Zandbelt.
 # Document History
 
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
+   draft-bdc-something-something-certificate-02
+   
+   * Editorial tweaks 
 
    draft-bdc-something-something-certificate-01
 
