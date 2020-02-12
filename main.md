@@ -7,7 +7,7 @@ workgroup = "Aspirational"
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-bdc-something-something-certificate-02"
+value = "draft-bdc-something-something-certificate-03"
 stream = "IETF"
 status = "standard"
 
