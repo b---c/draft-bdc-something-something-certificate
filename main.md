@@ -42,7 +42,12 @@ This document aspires to standardize an HTTP header field named `Client-Cert` th
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 [@!RFC2119] [@!RFC8174] when, and only when, they appear in all capitals, as shown here.
 
 ## Terminology
-Phrases like TLS client certificate authentication or mutually-authenticated TLS are used throughout this document to refer to the process whereby, in addition to the normal TLS server authentication with a certificate, a client presents its X.509 certificate [@!RFC5280] and proves possession of the corresponding private key to a server when negotiating a TLS session.  In contemporary versions of TLS [@RFC8446] [@RFC5246] this requires that the client send the Certificate and CertificateVerify messages during the handshake and for the server to verify the CertificateVerify and Finished messages.
+Phrases like TLS client certificate authentication or mutually-authenticated TLS are used throughout this document to refer to the process whereby, in addition to the normal TLS server authentication with a certificate, a client presents its X.509 certificate [@!RFC5280] and proves possession of the corresponding private key to a server when negotiating a TLS connection or the resumption of such a connection.  In contemporary versions of TLS [@RFC8446] [@RFC5246] this requires that the client send the Certificate and CertificateVerify messages during the handshake and for the server to verify the CertificateVerify and Finished messages.
+
+
+[[ HTTP2 forbids TLS renegotiation and post-handshake authentication but it's possible with HTTP1.1 and maybe needs to be discussed explicitly here or somewhere in this document? Naively I'd say that the `Client-Cert` header will be sent with the data of the most recent client cert anytime after renegotiation or post-handshake auth. And only for requests that are fully covered by the cert but that in practice making the determination of where exactly in the application data the cert messages arrived is hard to impossible so it'll be a best effort kind of thing. ]]
+
+
 
 # HTTP Header Field and Processing Rules
 
@@ -81,6 +86,8 @@ Requests made over a TLS connection where the use of client certificate authenti
 Backend origin servers may then use the `Client-Cert` header of the request to determine if the connection from the client to the TTRP was mutually-authenticated and, if so, the certificate thereby presented by the client. 
 
 Forward proxies and other intermediaries MUST NOT add the `Client-Cert` header to requests, or modify an existing `Client-Cert` header. Similarly, clients MUST NOT employ the `Client-Cert` header in requests. 
+
+A server that receives a request with a `Client-Cert` header value that it considers to be too large can respond with an HTTP 431 status code per Section 5 of [@RFC6585].
 
 
 # Security Considerations {#sec}
@@ -169,6 +176,8 @@ Figure: Header in HTTP Request to Origin Server {#example-header}
 ## Header Injection
 This draft requires that the reverse proxy sanitize the headers of the incoming request by removing or overwriting any existing instances of the `Client-Cert` header before dispatching that request to the backend application. Otherwise, a client could inject its own `Client-Cert` header that would appear to the backend to have come from the reverse proxy. Although numerous other methods of detecting/preventing header injection are possible; such as the use of a unique secret value as part of the header name or value or the application of a signature, HMAC, or AEAD, there is no common general standardized mechanism. The potential problem of client header injection is not at all unique to the functionality of this draft and it would therefor be inappropriate for this draft to define a one-off solution. In the absence of a generic standardized solution existing currently, stripping/sanitizing the headers is the de facto means of protecting against header injection in practice today. Sanitizing the headers is sufficient when properly implemented and is normative requirement of (#sec).
 
+[[ Note that there are some very strong opinions around this issue. One (well respected) contributor has suggested that due potential/perceived brittleness of the approach, the draft should pursue informational status rather than proposed standard. ]]
+
 ## The Forwarded HTTP Extension
 The `Forwarded` HTTP header field defined in [@RFC7239] allows proxy components to disclose information lost in the proxying process. The TLS client certificate information of concern to this draft could have been communicated with an extension parameter to the `Forwarded` header field, however, doing so would have had some disadvantages that this draft endeavored to avoid. The `Forwarded` header syntax allows for information about a full the chain of proxied HTTP requests, whereas the `Client-Cert` header of this document is concerned only with conveying information about the certificate presented by the originating client on the TLS connection to the reverse proxy (which appears as the server from that client's perspective) to backend applications.  The multi-hop syntax of the `Forwarded` header is expressive but also more complicated, which would make processing it more cumbersome, and more importantly, make properly sanitizing its content as required by (#sec) to prevent header injection considerably more difficult and error prone. Thus, this draft opted for the flatter and more straightforward structure of a single `Client-Cert` header.
 
@@ -177,21 +186,31 @@ Different applications will have varying requirements about what information fro
 
 The handshake and validation of the client certificate (chain) of the mutually-authenticated TLS connection is performed by reverse proxy.  With the responsibility of certificate validation falling on the proxy, only the end-entity certificate is passed to the backend - the root Certificate Authority is not included nor are any intermediates. 
 
-[[ It has been suggested that more information about the certificate chain might be needed/wanted by the backend application and that any intermediates as well as the root should also be somehow conveyed, which is an area for further discussion should this draft progress. ]]
+[[ It has been suggested that more information about the certificate chain might be needed/wanted by the backend application (to independently evaluate the cert chain, for example, although that could potentially be very inefficient) and that any intermediates as well as the root should also be somehow conveyed, which is an area for further discussion should this draft progress. One potential approach suggested by a few folks is to allow some configurability in what is sent along with maybe a prefix token to indicate what's being sent - something like `Client-Cert: FULL <cert> <intermediate> <anchor>` or `Client-Cert: EE <cert>`] or a perhaps a parameter or other construct of draft-ietf-httpbis-header-structure. It's also been suggested that the end-entity certificate by itself might sometimes be too big (esp. e.g., with some post-quantum signature schemes). Hard to account for it both being too much data and not enough data at the same time. But potentially configuration options to send only specific attribute(s) from the client certificate is a possibility for that. In the author's humble opinion the end-entity certificate by itself strikes a good balance for the majority of needs. But, again, this is an area for further discussion should this draft progress. ]]
+
+[[ It has also been suggested that maybe considerations for [@RFC7250] Raw Public Keys is maybe worth considering. This too is this is an area for further discussion and consideration should this draft progress. ]]
 
 # Acknowledgements
 The author would like to thank the following individuals who've contributed in various ways ranging from just being generally supportive of bringing forth the draft to providing specific feedback or content:
 Annabelle Backman,
+Mike Bishop,
+Rory Hewitt,
 Benjamin Kaduk,
 Torsten Lodderstedt,
 Kathleen Moriarty,
+Mark Nottingham,
 Mike Ounsworth,
 Matt Peterson,
+Eric Rescorla,
 Justin Richer,
 Michael Richardson,
+Joe Salowey,
 Rich Salz,
+Mohit Sethi,
 Rifaat Shekh-Yusef,
 Travis Spencer,
+Nick Sullivan,
+Peter Wu,
 and
 Hans Zandbelt.
 
@@ -200,6 +219,10 @@ Hans Zandbelt.
 # Document History
 
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
+   draft-bdc-something-something-certificate-03
+   
+   * Expanded [[further discussion notes]] to capture some of the feedback in and around the presentation of the draft in SECDISPATCH at IETF 107 and add those who've provided such feedback to the acknowledgements
+   
    draft-bdc-something-something-certificate-02
    
    * Editorial tweaks + [[further discussion notes]] 
