@@ -7,7 +7,7 @@ workgroup = "Aspirational"
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-bdc-something-something-certificate-03"
+value = "draft-bdc-something-something-certificate-04"
 stream = "IETF"
 status = "standard"
 
@@ -219,6 +219,9 @@ Hans Zandbelt.
 # Document History
 
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
+
+   draft-bdc-something-something-certificate-04
+
    draft-bdc-something-something-certificate-03
    
    * Expanded [[further discussion notes]] to capture some of the feedback in and around the presentation of the draft in SECDISPATCH at IETF 107 and add those who've provided such feedback to the acknowledgements
