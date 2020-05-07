@@ -182,7 +182,7 @@ This draft requires that the reverse proxy sanitize the headers of the incoming 
 The `Forwarded` HTTP header field defined in [@RFC7239] allows proxy components to disclose information lost in the proxying process. The TLS client certificate information of concern to this draft could have been communicated with an extension parameter to the `Forwarded` header field, however, doing so would have had some disadvantages that this draft endeavored to avoid. The `Forwarded` header syntax allows for information about a full the chain of proxied HTTP requests, whereas the `Client-Cert` header of this document is concerned only with conveying information about the certificate presented by the originating client on the TLS connection to the reverse proxy (which appears as the server from that client's perspective) to backend applications.  The multi-hop syntax of the `Forwarded` header is expressive but also more complicated, which would make processing it more cumbersome, and more importantly, make properly sanitizing its content as required by (#sec) to prevent header injection considerably more difficult and error prone. Thus, this draft opted for the flatter and more straightforward structure of a single `Client-Cert` header.
 
 ## The Whole Certificate and Only the Whole Certificate 
-Different applications will have varying requirements about what information from the client certificate is needed, such as the subject and/or issuer distinguished name, subject alternative name(s), serial number, subject public key info, fingerprint, etc.. Furthermore some applications like [@I-D.ietf-oauth-mtls] make use of the entire certificate. In order to accommodate the latter and ensure wide applicability by not trying to cherry-pick particular certificate information, this draft opted to pass the full encoded certificate as the value of the `Client-Cert` header.
+Different applications will have varying requirements about what information from the client certificate is needed, such as the subject and/or issuer distinguished name, subject alternative name(s), serial number, subject public key info, fingerprint, etc.. Furthermore some applications, such as "OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens" [@RFC8705], make use of the entire certificate. In order to accommodate the latter and ensure wide applicability by not trying to cherry-pick particular certificate information, this draft opted to pass the full encoded certificate as the value of the `Client-Cert` header.
 
 The handshake and validation of the client certificate (chain) of the mutually-authenticated TLS connection is performed by reverse proxy.  With the responsibility of certificate validation falling on the proxy, only the end-entity certificate is passed to the backend - the root Certificate Authority is not included nor are any intermediates. 
 
@@ -221,6 +221,8 @@ Hans Zandbelt.
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
 
    draft-bdc-something-something-certificate-04
+   
+   * Update reference from draft-ietf-oauth-mtls to RFC8705
 
    draft-bdc-something-something-certificate-03
    
