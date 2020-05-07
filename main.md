@@ -7,7 +7,7 @@ workgroup = "Aspirational"
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-bdc-something-something-certificate-04"
+value = "draft-bdc-something-something-certificate-05"
 stream = "IETF"
 status = "standard"
 
@@ -219,6 +219,8 @@ Hans Zandbelt.
 # Document History
 
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
+   
+   draft-bdc-something-something-certificate-05
 
    draft-bdc-something-something-certificate-04
    
