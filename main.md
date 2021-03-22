@@ -9,7 +9,7 @@ workgroup = "Aspirational"
 name = "Internet-Draft"
 value = "draft-bdc-something-something-certificate-05"
 stream = "IETF"
-status = "standard"
+status = "informational"
 
 [[author]]
 initials="B."
@@ -221,6 +221,8 @@ Hans Zandbelt.
    [[ To be removed by the RFC Editor before publication as an RFC (should that come to pass) ]]
    
    draft-bdc-something-something-certificate-05
+
+   * Change intended status of the draft to Informational
 
    draft-bdc-something-something-certificate-04
    
